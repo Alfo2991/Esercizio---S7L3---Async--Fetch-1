@@ -1,4 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap');
+
+#top {
+    display: flex;
+    justify-content: space-between;
+    margin-inline: 1em;
+  }
+
 :root{
     font-family: 'Poppins', sans-serif;
     red: rgb(187, 5, 51)
@@ -8,10 +15,39 @@
     --sm-font:'Poppins', serif;
 }
 
-body{
-    font-family: va(--sm-font);;
-}
 
 .bg-primary{
     background-color: var(red) !important;
 }
+
+
+  .card img {
+    object-fit: cover;
+    height: 18em;
+  }
+  .card {
+    margin-inline: 0.5em;
+    height: 30em;
+  }
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .selected {
+    border: 2px solid rgb(255, 85, 0);
+  }
+  .card-body h5 {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  #books {
+    margin-inline: 5em;
+  }
+  body {
+    margin-block: 2em;
+  }
+  h1 {
+    margin-bottom: 1em;
+  }

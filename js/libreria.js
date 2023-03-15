@@ -1,42 +1,72 @@
-const createBookHTML = (book) => {
-    return `<div class="card mb-5 border border-1" style="width: 20rem;">
-        <img src="${book.img}" class="card-img-top" alt="">
-        <div class="card-body">
-          <h5 class="card-title">${book.title}</h5>
-          <p class="card-text">${book.price}€</p>
-          <button href="#" class="btn btn-primary">Skip</button>
-        </div>
-      </div>`;
-  };
-  
-  const asyncFunzione = async function () {
-    try {
-      let dataFromUrl = await fetch("https://striveschool-api.herokuapp.com/books");
-      console.log(DataFromUrl);
-      if (dataFromUrl.ok) {
-        let books = await DataFromUrl.json();
-        console.log(books);
-        let remainingBooks = books.length;
-        const threeBooks = Math.ceil(remainingBooks / 3);
-        let col1 = document.getElementById("col1");
-        let col2 = document.getElementById("col2");
-        let col3 = document.getElementById("col3");
-  
-        for (let i = 0; i < remainingBooks; i++) {
-          let book = books[i];
-          let column = i < threeBooks ? col1 : i < 2 * threeBooks ? col2 : col3;
-          column.innerHTML += createBookHTML(book);
-        }
-  
-        let buttons = document.querySelectorAll("button");
-        buttons.forEach((button) => {
-          button.addEventListener("click", () => {
-            button.closest(".card").remove();
-          });
-        });
-      }
-    } catch (error) {
-      console.log(error);
+async function getBooks() {
+    const response = await fetch("https://striveschool-api.herokuapp.com/books");
+    const listOfBooks = await response.json();
+    listOfAllBooks = listOfBooks;
+    return listOfBooks;
+}
+let listOfAllBooks = [];
+window.onload = async () => {
+    const listOfBooks = await getBooks();
+    showBooks(listOfBooks);
+};
+
+let cardsDiv = document.querySelector("#books");
+let showBooks = function (listOfBooks) {
+    listOfBooks.forEach((book) => {
+        let createCard = document.createElement("div");
+        createCard.innerHTML = `<div class="card" style="width: 15rem;">
+          <img src="${book.img}" class="card-img-top" alt="...">
+          <div class="card-body">
+            <h5 class="card-title">${book.title}</h5>
+            <p class="card-text">${book.category}</p>
+            <button class="btn btn-primary" onclick="addToCart(event)">Add to cart</button>
+            <button class="btn btn-secondary" onclick="skipBook(event)">Skip</button>
+          </div>
+        </div>`;
+        cardsDiv.appendChild(createCard);
+    });
+};
+
+let cartList = document.querySelector("#cart-list");
+let addToCart = function (event) {
+    let selectedTitle = event.currentTarget.closest(".card");
+    selectedTitle.className = "card selected";
+    let createLi = document.createElement("li");
+    createLi.className = "col-4";
+    createLi.innerHTML = selectedTitle.innerHTML;
+    cartList.appendChild(createLi);
+    createLi.querySelector("div :nth-child(3)").remove();
+    let deleteButton = createLi.querySelector("div :nth-child(3)");
+    deleteButton.innerText = "Delete";
+    deleteButton.className = "btn btn-danger";
+    deleteButton.addEventListener("click", function (event) {
+        event.currentTarget.closest(".col-6").remove();
+        selectedTitle.className = "card";
+    });
+};
+let skipBook = function (event) {
+    let selectedTitle = event.currentTarget.closest(".card");
+    selectedTitle.remove();
+};
+let clearCart = function () {
+    cartList.innerHTML = "";
+    let allCards = document.querySelectorAll(".card");
+    allCards.forEach((card) => {
+        card.className = "card";
+    });
+};
+let clearButton = document.querySelector("#clearCart");
+clearButton.addEventListener("click", clearCart);
+let filteredBooks = [];
+let searchBook = function (query) {
+    if (query.length > 3) {
+        filteredBooks = listOfAllBooks.filter((book) =>
+            book.title.toLowerCase().includes(query.toLowerCase())
+        );
+        cardsDiv.innerHTML = "";
+        showBooks(filteredBooks);
+    } else {
+        cardsDiv.innerHTML = "";
+        showBooks(listOfAllBooks);
     }
-  };
-  asyncFunzione();
+};
