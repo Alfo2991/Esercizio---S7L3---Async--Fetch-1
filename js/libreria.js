@@ -58,15 +58,3 @@ let clearCart = function () {
 let clearButton = document.querySelector("#clearCart");
 clearButton.addEventListener("click", clearCart);
 let filteredBooks = [];
-let searchBook = function (query) {
-    if (query.length > 3) {
-        filteredBooks = listOfAllBooks.filter((book) =>
-            book.title.toLowerCase().includes(query.toLowerCase())
-        );
-        cardsDiv.innerHTML = "";
-        showBooks(filteredBooks);
-    } else {
-        cardsDiv.innerHTML = "";
-        showBooks(listOfAllBooks);
-    }
-};
